@@ -25,7 +25,6 @@ import {element, renderLoader, clearLoader} from './views/base';
  * - Liked Object 
  */
 const state = {};
-window.state = state;
 
 /*  
 *
@@ -88,7 +87,6 @@ RECIPE CONTROLLER
 const controlRecipe = async () => {
     // hash code of the recipe, get id from url 
     const id = window.location.hash.replace('#', '');
-    console.log(id);
 
     if(id){
         // Prepare UI for changes
@@ -171,11 +169,6 @@ LIKES CONTROLLER
 *
 */
 
-// Testing
-state.likes = new Likes();
-likesView.toggleLikeMenu(state.likes.getNumberLikes());
-
-
 const controlLike = () => {
     if(!state.likes) state.likes = new Likes();
 
@@ -209,7 +202,21 @@ const controlLike = () => {
 
     }
     likesView.toggleLikeMenu(state.likes.getNumberLikes());
-}
+};
+
+// Restore liked recipes on page load
+window.addEventListener('load', () => {
+    state.likes = new Likes();
+
+    // Restore Likes
+    state.likes.readStorage();
+
+    // Toggle like menu button
+    likesView.toggleLikeMenu(state.likes.getNumberLikes());
+
+    // Render the existing likes
+    state.likes.likes.forEach(like => likesView.renderLike(like));
+});
 
 // Handling reicpe button clicks
 element.recipe.addEventListener('click', e => {
@@ -231,5 +238,3 @@ element.recipe.addEventListener('click', e => {
         controlLike();
     }
 });
-
-window.l = new List();
